@@ -1,0 +1,19 @@
+{
+    "jdk.jdkhome": "c:\\Users\\yardh\\code n shi\\test\\Oracle_JDK-24",
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "java.completion.favoriteStaticMembers": [
+        "org.junit.Assert.*",
+        "org.junit.Assume.*",
+        "org.junit.jupiter.api.Assertions.*",
+        "org.junit.jupiter.api.Assumptions.*",
+        "org.junit.jupiter.api.DynamicContainer.*",
+        "org.junit.jupiter.api.DynamicTest.*",
+        "org.mockito.Mockito.*",
+        "org.mockito.ArgumentMatchers.*",
+        "org.mockito.Answers.*"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/exp4j-0.4.8.jar"
+    ]
+}
