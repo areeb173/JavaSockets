@@ -36,7 +36,6 @@ public class Server {
             System.err.println("Server error: " + e.getMessage());
         }
     }
-
     public static void shutdownServer() {
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
@@ -45,8 +44,9 @@ public class Server {
         } catch (IOException e) {
             System.err.println("Error shutting down server: " + e.getMessage());
         }
+        // force-quit to kill any lingering handler threads
+        System.exit(0);
     }
-
     // Write user data to log file
     public static void logUserDisconnect(String userName) {
         if (userConnectionTimes.containsKey(userName)) {

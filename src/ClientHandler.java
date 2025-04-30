@@ -8,32 +8,38 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
     }
 
-    public void run() {
-        try {
-            BufferedReader inFromClient = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-            DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 
-            // Read the client's name and log the connection time
+    public void run() {
+        try (
+            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream())
+        ) {
+            // Read client name and log connection time 
             String name = inFromClient.readLine();
             System.out.println("Connected with: " + name);
-            Server.trackUserConnection(name);  // Track connection
+            Server.trackUserConnection(name);   // Track connection
 
             String mathExpression;
             while ((mathExpression = inFromClient.readLine()) != null) {
-                if (mathExpression.equalsIgnoreCase("close")) {
+                if ("close".equalsIgnoreCase(mathExpression)) {
                     System.out.println("Client " + name + " disconnected.");
                     outToClient.writeBytes("Connection closed.\n");
                     break;
-                } else if (mathExpression.equalsIgnoreCase("shutdown")) {
+
+                } else if ("shutdown".equalsIgnoreCase(mathExpression)) {
                     System.out.println("Client " + name + " requested shutdown.");
+
+                    // Send the shutdown acknowledgement first
                     outToClient.writeBytes("Shutting down server.\n");
-                    Server.shutdownServer(); // Calls shutdown method in Server
+                    outToClient.flush();
+
+                    //  close the ServerSocket so no new accepts happen
+                    Server.shutdownServer();
                     break;
                 }
 
+                // Normal calculation path
                 try {
-                    // Evaluate expression
                     double result = Calculator.evaluate(mathExpression);
                     outToClient.writeBytes(result + "\n");
                 } catch (IllegalArgumentException e) {
@@ -41,12 +47,16 @@ public class ClientHandler implements Runnable {
                 }
             }
 
-            // Log user disconnection and duration
+            // Log disconnect and clean up
             Server.logUserDisconnect(name);
-            socket.close();
 
         } catch (IOException e) {
             System.err.println("IOException in ClientHandler: " + e.getMessage());
+        } finally {
+            // Always close the client socket
+            try {
+                socket.close();
+            } catch (IOException ignored) {}
         }
     }
 }
