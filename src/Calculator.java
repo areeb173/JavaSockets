@@ -50,13 +50,20 @@ public class Calculator {
         return -1;
     }
 
-    private static double applyOperator(double left, double right, char op) {
-        return switch (op) {
-            case '+' -> left + right;
-            case '-' -> left - right;
-            case '*' -> left * right;
-            case '/' -> left / right;
-            default -> throw new IllegalArgumentException("Unknown operator: " + op);
-        };
+    private static double applyOperator( double left, double right,char op) {
+        switch (op) {
+            case '+':
+                return left + right;
+            case '-':
+                return left - right;
+            case '*':
+                return left * right;
+            case '/':
+                if (right == 0)
+                    throw new ArithmeticException("Division by zero");
+                return left / right;
+            default:
+                throw new IllegalArgumentException("Unknown operator: " + op);
+        }
     }
 }
